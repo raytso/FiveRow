@@ -94,21 +94,12 @@ x1 = round((coordinates(1)-20)/50) + 1;
 y1 = round((coordinates(2)-25)/50) + 1;
 
 global board_matrix;
-global user;
 M = board_matrix;
-cache = M(y1, x1);
-% input data to matrix
-if cache ~= 0    
-else
-    M(y1, x1) = user;
-    board_matrix = M;
+M(y1, x1) = ;
+board_matrix = M;
 
-    if user == 1
-        user = -1;
-    else
-        user = 1;
-    end
-end
+
+
 
 
 % --- Outputs from this function are returned to the command line.
