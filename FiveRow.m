@@ -102,11 +102,147 @@ if cache ~= 0
 else
     M(y1, x1) = user;
     board_matrix = M;
-
+    M
+    % check if 5 in a row
+    who = check_if_win(M, y1, x1)
+    if who == 1
+        fprintf('win');
+    else
+        %continue
+    end
+    
+    % switch user
     if user == 1
         user = -1;
     else
         user = 1;
+    end
+end
+
+
+function [ output ] = check_if_win(M, y, x)
+no_streak = 1;
+cache = M(y, x);
+while(no_streak)
+    % left
+    for a = 1:4
+        if M(y-a, x) == cache
+            if a == 4
+                output = 1;
+                no_streak = 0;
+                
+            end
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+    
+    % left-up
+    for b = 1:4
+        if M(y-b, x-b) == cache
+            if b == 4
+                output = 1;
+                no_streak = 0;
+            end
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+
+    % up
+    for c = 1:4
+        if M(y, x-c) == cache
+            if c == 4
+                output = 1;
+                no_streak = 0;
+            end
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+
+    % up-right
+    for d = 1:4
+        if M(y-d, x+d) == cache
+            if d == 4
+                output = 1;
+                no_streak = 0;
+            end
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+
+    % right
+    for e = 1:4
+        if M(y, x+e) == cache
+            if e == 4
+                output = 1;
+                no_streak = 0;
+            end
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+
+    % right-down
+    for f = 1:4
+        if M(y+f, x+f) == cache
+            if f == 4
+                output = 1;
+                no_streak = 0;
+            end
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+
+    % down
+    for g = 1:4
+        if M(y+g, x) == cache
+            if g == 4
+                output = 1;
+                no_streak = 0;
+            end
+            
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+
+    % down-left
+    for i = 1:4
+        if M(y+i, x-i) == cache
+            if i == 4
+                output = 1;
+                no_streak = 0;
+            end
+        else
+            output = 0;
+            no_streak = 0;
+            break; 
+        end
     end
 end
 
