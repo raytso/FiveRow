@@ -60,8 +60,12 @@ handles.output = hObject;
 
 % Create the 15x15 board with assigned matrix
 
-% Board background image
+% Board background image and other stuff
 im = imread('board.jpg');
+global black;
+global white;
+black = imread('chess_black.png');
+white = imread('chess_white.png');
 imageHandle = image(im);
 axis off;
 
@@ -72,6 +76,9 @@ board_matrix = M;
 % Set first user
 global user;
 user = 1;
+
+global win;
+win = 0;
 
 % Set callback function for image when clicked
 set(imageHandle, 'ButtonDownFcn', @ImageClickCallback);
@@ -84,6 +91,11 @@ guidata(hObject, handles);
 
 
 function ImageClickCallback(objectHandle, eventdata)
+global win;
+global board_matrix;
+global user;
+
+if win == 0
 % Get the users mouse coordinates when clicked
 axesHandle  = get(objectHandle,'Parent');
 coordinates = get(axesHandle,'CurrentPoint'); 
@@ -93,8 +105,8 @@ coordinates = coordinates(1,1:2);
 x1 = round((coordinates(1)-20)/50) + 1;
 y1 = round((coordinates(2)-25)/50) + 1;
 
-global board_matrix;
-global user;
+im
+
 M = board_matrix;
 cache = M(y1, x1);
 % input data to matrix
@@ -104,9 +116,9 @@ else
     board_matrix = M;
     M
     % check if 5 in a row
-    who = check_if_win(M, y1, x1)
-    if who == 1
-        fprintf('win');
+    win = check_if_win(M, y1, x1);
+    if win == 1
+        win_dialog();
     else
         %continue
     end
@@ -118,12 +130,15 @@ else
         user = 1;
     end
 end
+else
+end
 
 
 function [ output ] = check_if_win(M, y, x)
 no_streak = 1;
 cache = M(y, x);
 while(no_streak)
+    tic;
     % left
     for a = 1:4
         if M(y-a, x) == cache
@@ -244,6 +259,7 @@ while(no_streak)
             break; 
         end
     end
+    toc;
 end
 
 

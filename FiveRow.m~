@@ -60,10 +60,29 @@ handles.output = hObject;
 
 % Create the 15x15 board with assigned matrix
 
-% Board background image
+% Board background image and other stuff
 im = imread('board.jpg');
+global black;
+global white;
+black = imread('chess_black.png');
+white = imread('chess_white.png');
 imageHandle = image(im);
 axis off;
+
+%# Initializations:
+% Rescale chess image
+scale = [10 10];              %# The resolution scale factors: [rows columns]
+oldSize = size(black);                   %# Get the size of your image
+newSize = max(floor(scale.*oldSize(1:10)),1);  %# Compute the new image size
+
+%# Compute an upsampled set of indices:
+
+rowIndex = min(round(((1:newSize(1))-0.5)./scale(1)+0.5),oldSize(1));
+colIndex = min(round(((1:newSize(2))-0.5)./scale(2)+0.5),oldSize(2));
+
+%# Index old image to get new image:
+
+black = black(rowIndex,colIndex,:);
 
 M = zeros(19);
 global board_matrix;
@@ -72,6 +91,9 @@ board_matrix = M;
 % Set first user
 global user;
 user = 1;
+
+global win;
+win = 0;
 
 % Set callback function for image when clicked
 set(imageHandle, 'ButtonDownFcn', @ImageClickCallback);
@@ -84,6 +106,11 @@ guidata(hObject, handles);
 
 
 function ImageClickCallback(objectHandle, eventdata)
+global win;
+global board_matrix;
+global user;
+
+if win == 0
 % Get the users mouse coordinates when clicked
 axesHandle  = get(objectHandle,'Parent');
 coordinates = get(axesHandle,'CurrentPoint'); 
@@ -93,8 +120,8 @@ coordinates = coordinates(1,1:2);
 x1 = round((coordinates(1)-20)/50) + 1;
 y1 = round((coordinates(2)-25)/50) + 1;
 
-global board_matrix;
-global user;
+im
+
 M = board_matrix;
 cache = M(y1, x1);
 % input data to matrix
@@ -104,9 +131,9 @@ else
     board_matrix = M;
     M
     % check if 5 in a row
-    who = check_if_win(M, y1, x1)
-    if who == 1
-        fprintf('win');
+    win = check_if_win(M, y1, x1);
+    if win == 1
+        win_dialog();
     else
         %continue
     end
@@ -118,23 +145,29 @@ else
         user = 1;
     end
 end
+else
+end
 
 
 function [ output ] = check_if_win(M, y, x)
 no_streak = 1;
 cache = M(y, x);
 while(no_streak)
+    tic;
     % left
     for a = 1:4
         if M(y-a, x) == cache
             if a == 4
                 output = 1;
                 no_streak = 0;
-                break;
+                
             end
         else
             break; 
         end
+    end
+    if no_streak == 0
+        break;
     end
     
     % left-up
@@ -148,6 +181,9 @@ while(no_streak)
             break; 
         end
     end
+    if no_streak == 0
+        break;
+    end
 
     % up
     for c = 1:4
@@ -159,6 +195,9 @@ while(no_streak)
         else
             break; 
         end
+    end
+    if no_streak == 0
+        break;
     end
 
     % up-right
@@ -172,6 +211,9 @@ while(no_streak)
             break; 
         end
     end
+    if no_streak == 0
+        break;
+    end
 
     % right
     for e = 1:4
@@ -183,6 +225,9 @@ while(no_streak)
         else
             break; 
         end
+    end
+    if no_streak == 0
+        break;
     end
 
     % right-down
@@ -196,6 +241,9 @@ while(no_streak)
             break; 
         end
     end
+    if no_streak == 0
+        break;
+    end
 
     % down
     for g = 1:4
@@ -208,6 +256,9 @@ while(no_streak)
         else
             break; 
         end
+    end
+    if no_streak == 0
+        break;
     end
 
     % down-left
@@ -223,6 +274,7 @@ while(no_streak)
             break; 
         end
     end
+    toc;
 end
 
 
