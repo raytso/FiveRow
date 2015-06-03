@@ -60,12 +60,15 @@ handles.output = hObject;
 
 % Create the 15x15 board with assigned matrix
 
+% axis off;
+
 % Board background image and other stuff
 im = imread('board.jpg');
 global black;
 global white;
-black = imread('chess_black.png');
-white = imread('chess_white.png');
+global blackchess_alpha;
+global whitechess_alpha;
+
 imageHandle = image(im);
 axis off;
 
@@ -91,47 +94,64 @@ guidata(hObject, handles);
 
 
 function ImageClickCallback(objectHandle, eventdata)
-global win;
-global board_matrix;
-global user;
+    global win;
+    global board_matrix;
+    global user;
+    global blackchess_alpha;
+    global whitechess_alpha;
 
-if win == 0
-% Get the users mouse coordinates when clicked
-axesHandle  = get(objectHandle,'Parent');
-coordinates = get(axesHandle,'CurrentPoint'); 
-coordinates = coordinates(1,1:2);
+    if win == 0
+        % Get the users mouse coordinates when clicked
+        axesHandle  = get(objectHandle,'Parent');
+        coordinates = get(axesHandle,'CurrentPoint'); 
+        coordinates = coordinates(1,1:2);
 
-% Round up user mouse inputs to the nearast integar point
-x1 = round((coordinates(1)-20)/50) + 1;
-y1 = round((coordinates(2)-25)/50) + 1;
+        % Round up user mouse inputs to the nearast integar point
+        x1 = round((coordinates(1)-20)/50) + 1;
+        y1 = round((coordinates(2)-25)/50) + 1;
+        x2 = round((coordinates(1)-20)/50)*50*0.7081 + 18;
+        y2 = 780 - round((coordinates(2)-20)/50)*50*0.7081;
 
-im
+        M = board_matrix;
+        cache = M(y1, x1);
+        % input data to matrix
+        if cache ~= 0    
+        else
+            if user == 1
+                axes('Units','pixels','Position',[ x2, y2, 20, 20 ]);
+                [black, map, blackchess_alpha] = imread('chess_black.png');
+                black_chess = image(black);
+                set(black_chess, 'AlphaData', blackchess_alpha);
+                axis off;
 
-M = board_matrix;
-cache = M(y1, x1);
-% input data to matrix
-if cache ~= 0    
-else
-    M(y1, x1) = user;
-    board_matrix = M;
-    M
-    % check if 5 in a row
-    win = check_if_win(M, y1, x1);
-    if win == 1
-        win_dialog();
+            else
+                axes('Units','pixels','Position',[ x2, y2, 20, 20 ]);
+                [white, map, whitechess_alpha] = imread('chess_white.png');
+                white_chess = image(white);
+                set(white_chess, 'AlphaData', whitechess_alpha);
+                axis off;
+            end
+
+            M(y1, x1) = user;
+            board_matrix = M;
+            M
+            % check if 5 in a row
+            win = check_if_win(M, y1, x1);
+            if win == 1
+                win_dialog();
+            else
+                %continue
+            end
+
+            % switch user
+            if user == 1
+                user = -1;
+            else
+                user = 1;
+            end
+        end
     else
-        %continue
     end
-    
-    % switch user
-    if user == 1
-        user = -1;
-    else
-        user = 1;
-    end
-end
-else
-end
 
 
 function [ output ] = check_if_win(M, y, x)
