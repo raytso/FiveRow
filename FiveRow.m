@@ -22,7 +22,7 @@ function varargout = FiveRow(varargin)
 
 % Edit the above text to modify the response to help FiveRow
 
-% Last Modified by GUIDE v2.5 02-Jun-2015 17:09:45
+% Last Modified by GUIDE v2.5 03-Jun-2015 21:50:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,20 +59,15 @@ handles.output = hObject;
 % uiwait(handles.figure1);
 
 % Create the 15x15 board with assigned matrix
-
+% axes('Units','pixels','Position',[ 10, 150, 800, 800 ]);
 % axis off;
 
 % Board background image and other stuff
-im = imread('board.jpg');
-global black;
-global white;
-global blackchess_alpha;
-global whitechess_alpha;
-
+im = imread('board.png');
 imageHandle = image(im);
 axis off;
 
-M = zeros(19);
+M = zeros(21);
 global board_matrix;
 board_matrix = M;
 
@@ -107,10 +102,10 @@ function ImageClickCallback(objectHandle, eventdata)
         coordinates = coordinates(1,1:2);
 
         % Round up user mouse inputs to the nearast integar point
-        x1 = round((coordinates(1)-20)/50) + 1;
-        y1 = round((coordinates(2)-25)/50) + 1;
-        x2 = round((coordinates(1)-20)/50)*50*0.7081 + 18;
-        y2 = 780 - round((coordinates(2)-20)/50)*50*0.7081;
+        x1 = round((coordinates(1)-15)/51.5) + 2;
+        y1 = round((coordinates(2)-17)/51.5) + 2;
+        x2 = (x1-2)*51.5*0.8861 + 15;
+        y2 = 835 - (y1-2)*51.5*0.8861;
 
         M = board_matrix;
         cache = M(y1, x1);
@@ -118,14 +113,14 @@ function ImageClickCallback(objectHandle, eventdata)
         if cache ~= 0    
         else
             if user == 1
-                axes('Units','pixels','Position',[ x2, y2, 20, 20 ]);
+                axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
                 [black, map, blackchess_alpha] = imread('chess_black.png');
                 black_chess = image(black);
                 set(black_chess, 'AlphaData', blackchess_alpha);
                 axis off;
 
             else
-                axes('Units','pixels','Position',[ x2, y2, 20, 20 ]);
+                axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
                 [white, map, whitechess_alpha] = imread('chess_white.png');
                 white_chess = image(white);
                 set(white_chess, 'AlphaData', whitechess_alpha);
@@ -134,7 +129,6 @@ function ImageClickCallback(objectHandle, eventdata)
 
             M(y1, x1) = user;
             board_matrix = M;
-            M
             % check if 5 in a row
             win = check_if_win(M, y1, x1);
             if win == 1
@@ -161,11 +155,28 @@ while(no_streak)
     tic;
     % left
     for a = 1:4
-        if M(y-a, x) == cache
+        steps_left_leftright = 5 - a;
+        compare = M(y, x-a);
+        if compare == cache
             if a == 4
                 output = 1;
                 no_streak = 0;
-                
+
+            end
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+
+    % right
+    for e = 1:steps_left_leftright
+        if M(y, x+e) == cache
+            if e == steps_left_leftright
+                output = 1;
+                no_streak = 0;
             end
         else
             break; 
@@ -177,8 +188,24 @@ while(no_streak)
     
     % left-up
     for b = 1:4
+        steps_left_leftuprightdown = 5 - b;
         if M(y-b, x-b) == cache
             if b == 4
+                output = 1;
+                no_streak = 0;
+            end
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+    
+    % right-down
+    for f = 1:steps_left_leftuprightdown
+        if M(y+f, x+f) == cache
+            if f == steps_left_leftuprightdown
                 output = 1;
                 no_streak = 0;
             end
@@ -192,7 +219,8 @@ while(no_streak)
 
     % up
     for c = 1:4
-        if M(y, x-c) == cache
+        steps_left_updown = 5 - c;
+        if M(y-c, x) == cache
             if c == 4
                 output = 1;
                 no_streak = 0;
@@ -204,9 +232,27 @@ while(no_streak)
     if no_streak == 0
         break;
     end
+    
+    % down
+    for g = 1:steps_left_updown
+        if M(y+g, x) == cache
+            if g == steps_left_updown
+                output = 1;
+                no_streak = 0;
+            end
+            
+        else
+            break; 
+        end
+    end
+    if no_streak == 0
+        break;
+    end
+
 
     % up-right
     for d = 1:4
+        steps_left_uprightleftdown = 5 - d;
         if M(y-d, x+d) == cache
             if d == 4
                 output = 1;
@@ -220,56 +266,11 @@ while(no_streak)
         break;
     end
 
-    % right
-    for e = 1:4
-        if M(y, x+e) == cache
-            if e == 4
-                output = 1;
-                no_streak = 0;
-            end
-        else
-            break; 
-        end
-    end
-    if no_streak == 0
-        break;
-    end
-
-    % right-down
-    for f = 1:4
-        if M(y+f, x+f) == cache
-            if f == 4
-                output = 1;
-                no_streak = 0;
-            end
-        else
-            break; 
-        end
-    end
-    if no_streak == 0
-        break;
-    end
-
-    % down
-    for g = 1:4
-        if M(y+g, x) == cache
-            if g == 4
-                output = 1;
-                no_streak = 0;
-            end
-            
-        else
-            break; 
-        end
-    end
-    if no_streak == 0
-        break;
-    end
-
+    
     % down-left
-    for i = 1:4
+    for i = 1:steps_left_uprightleftdown
         if M(y+i, x-i) == cache
-            if i == 4
+            if i == steps_left_uprightleftdown
                 output = 1;
                 no_streak = 0;
             end
@@ -346,3 +347,17 @@ function axes2_ButtonDownFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Get the users mouse coordinates when clicked
 
+
+% --- Executes on button press in pushbutton3.
+function pushbutton3_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over pushbutton3.
+function pushbutton3_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to pushbutton3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
