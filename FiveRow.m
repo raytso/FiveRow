@@ -22,7 +22,7 @@ function varargout = FiveRow(varargin)
 
 % Edit the above text to modify the response to help FiveRow
 
-% Last Modified by GUIDE v2.5 04-Jun-2015 08:16:32
+% Last Modified by GUIDE v2.5 04-Jun-2015 08:53:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,14 +78,20 @@ user = 1;
 global win;
 win = 0;
 
+global round;
+round = 0;
+
+global black_player;
+black_player;
+
+global white_player;
+white_player;
+
 % Set callback function for image when clicked
 set(imageHandle, 'ButtonDownFcn', @ImageClickCallback);
 
 % Update handles structure
 guidata(hObject, handles);
-
-
-
 
 
 function ImageClickCallback(objectHandle, eventdata)
@@ -96,8 +102,13 @@ function ImageClickCallback(objectHandle, eventdata)
     global user;
     global blackchess_alpha;
     global whitechess_alpha;
-
+    global black_player;
+    global white_player;
+    global playround;
+    global oops_button_enable;
+    
     if win == 0
+        
         % Get the users mouse coordinates when clicked
         axesHandle  = get(objectHandle,'Parent');
         coordinates = get(axesHandle,'CurrentPoint'); 
@@ -114,15 +125,17 @@ function ImageClickCallback(objectHandle, eventdata)
         % input data to matrix
         if cache ~= 0    
         else
+            oops_button_enable = 1;
             if user == 1
-                axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
+                playround = playround + 1;
+                black_player = axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
                 [black, map, blackchess_alpha] = imread('chess_black.png');
                 black_chess = image(black);
                 set(black_chess, 'AlphaData', blackchess_alpha);
                 axis off;
 
             else
-                axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
+                white_player = axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
                 [white, map, whitechess_alpha] = imread('chess_white.png');
                 white_chess = image(white);
                 set(white_chess, 'AlphaData', whitechess_alpha);
@@ -293,8 +306,6 @@ function varargout = FiveRow_OutputFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-a = 5;
-
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
@@ -340,6 +351,32 @@ function oops_button_Callback(hObject, eventdata, handles)
 % hObject    handle to oops_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global x1;
+global y1;
+global board_matrix;
+global black_player;
+global white_player
+global user;
+global oops_button_enable;
+
+if oops_button_enable == 1
+    M = board_matrix;
+    M(y1, x1) = 0;
+    board_matrix = M;
+    delete(axes);
+    if user == 1
+        delete(white_player);
+        user = -1;
+    else
+        delete(black_player);
+        user = 1;
+    end
+    set(handles.oops_button,'Enable','off');
+    oops_button_enable = 0;    
+else
+    
+end
+
 
 
 % --- Executes on mouse press over axes background.
@@ -359,8 +396,7 @@ function exit_button_Callback(hObject, eventdata, handles)
 out = exit_dialog();
 switch out 
     case 'Yes'
-         close(handles.figure1);
-         menu_selection();
+         delete(handles.figure1);
     case 'No'
     return 
 end
@@ -380,9 +416,23 @@ function oops_button_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to oops_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global x1;
-global y1;
-global board_matrix;
 
-M = board_matrix;
-M(y1, x1) = 0;
+
+% --- Executes on button press in forfeit_button.
+function forfeit_button_Callback(hObject, eventdata, handles)
+% hObject    handle to forfeit_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global user;
+out = forfeit_dialog();
+switch out 
+    case 'Yes'
+        if user == 1
+            user = -1;
+            win_dialog();
+        else
+            user = 1;
+        end
+    case 'No'
+    return 
+end
