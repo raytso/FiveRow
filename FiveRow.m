@@ -22,7 +22,7 @@ function varargout = FiveRow(varargin)
 
 % Edit the above text to modify the response to help FiveRow
 
-% Last Modified by GUIDE v2.5 03-Jun-2015 21:50:31
+% Last Modified by GUIDE v2.5 04-Jun-2015 08:16:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -90,6 +90,8 @@ guidata(hObject, handles);
 
 function ImageClickCallback(objectHandle, eventdata)
     global win;
+    global x1;
+    global y1;
     global board_matrix;
     global user;
     global blackchess_alpha;
@@ -333,9 +335,9 @@ varargout{1} = handles.output;
 % movegui(hObject, 'onscreen')
 
 
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
+% --- Executes on button press in oops_button.
+function oops_button_Callback(hObject, eventdata, handles)
+% hObject    handle to oops_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -348,16 +350,39 @@ function axes2_ButtonDownFcn(hObject, eventdata, handles)
 % Get the users mouse coordinates when clicked
 
 
-% --- Executes on button press in pushbutton3.
-function pushbutton3_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton3 (see GCBO)
+
+% --- Executes on button press in exit_button.
+function exit_button_Callback(hObject, eventdata, handles)
+% hObject    handle to exit_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+out = exit_dialog();
+switch out 
+    case 'Yes'
+         close(handles.figure1);
+         menu_selection();
+    case 'No'
+    return 
+end
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over exit_button.
+function exit_button_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to exit_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 
 % --- If Enable == 'on', executes on mouse press in 5 pixel border.
-% --- Otherwise, executes on mouse press in 5 pixel border or over pushbutton3.
-function pushbutton3_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to pushbutton3 (see GCBO)
+% --- Otherwise, executes on mouse press in 5 pixel border or over oops_button.
+function oops_button_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to oops_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global x1;
+global y1;
+global board_matrix;
+
+M = board_matrix;
+M(y1, x1) = 0;

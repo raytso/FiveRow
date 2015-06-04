@@ -22,7 +22,7 @@ function varargout = FiveRow(varargin)
 
 % Edit the above text to modify the response to help FiveRow
 
-% Last Modified by GUIDE v2.5 03-Jun-2015 20:59:17
+% Last Modified by GUIDE v2.5 04-Jun-2015 08:16:32
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -67,7 +67,7 @@ im = imread('board.png');
 imageHandle = image(im);
 axis off;
 
-M = zeros(19);
+M = zeros(21);
 global board_matrix;
 board_matrix = M;
 
@@ -90,6 +90,8 @@ guidata(hObject, handles);
 
 function ImageClickCallback(objectHandle, eventdata)
     global win;
+    global x1;
+    global y1;
     global board_matrix;
     global user;
     global blackchess_alpha;
@@ -100,13 +102,12 @@ function ImageClickCallback(objectHandle, eventdata)
         axesHandle  = get(objectHandle,'Parent');
         coordinates = get(axesHandle,'CurrentPoint'); 
         coordinates = coordinates(1,1:2);
-        coordinates(1)
-        coordinates(2)
+
         % Round up user mouse inputs to the nearast integar point
-        x1 = round((coordinates(1)-15)/51.5) + 1;
-        y1 = round((coordinates(2)-17)/51.5) + 1;
-        x2 = (x1-1)*51.5
-        y2 = (y1-1)
+        x1 = round((coordinates(1)-15)/51.5) + 2;
+        y1 = round((coordinates(2)-17)/51.5) + 2;
+        x2 = (x1-2)*51.5*0.8861 + 15;
+        y2 = 835 - (y1-2)*51.5*0.8861;
 
         M = board_matrix;
         cache = M(y1, x1);
@@ -130,7 +131,6 @@ function ImageClickCallback(objectHandle, eventdata)
 
             M(y1, x1) = user;
             board_matrix = M;
-            M
             % check if 5 in a row
             win = check_if_win(M, y1, x1);
             if win == 1
@@ -335,9 +335,9 @@ varargout{1} = handles.output;
 % movegui(hObject, 'onscreen')
 
 
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
+% --- Executes on button press in oops_button.
+function oops_button_Callback(hObject, eventdata, handles)
+% hObject    handle to oops_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -348,3 +348,36 @@ function axes2_ButtonDownFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % Get the users mouse coordinates when clicked
+
+
+
+% --- Executes on button press in exit_button.
+function exit_button_Callback(hObject, eventdata, handles)
+% hObject    handle to exit_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+close(handles.figure1);
+out = exit_dialog();
+
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over exit_button.
+function exit_button_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to exit_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over oops_button.
+function oops_button_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to oops_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global x1;
+global y1;
+global board_matrix;
+
+M = board_matrix;
+M(y1, x1) = 0;
