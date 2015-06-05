@@ -101,6 +101,7 @@ if win_check == 0
     y2 = 835 - (handles.y1-2)*51.5*0.8861;
 
     M = handles.board_matrix;
+    M
     cache = M(handles.y1, handles.x1);
     % input data to matrix
     if cache ~= 0    
@@ -142,12 +143,14 @@ if win_check == 0
 else
 end
 guidata(hObject, handles);
+handles
 
 
 function [ output ] = check_if_win(M, y, x)
 no_streak = 1;
 cache = M(y, x);
 while(no_streak)
+    tic;
     % left
     for a = 1:4
         steps_left_leftright = 5 - a;
@@ -275,6 +278,7 @@ while(no_streak)
             break; 
         end
     end
+    toc;
 end
 
 
@@ -330,6 +334,7 @@ function oops_button_Callback(hObject, eventdata, handles)
 % hObject    handle to oops_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles
 M = handles.board_matrix;
 M(handles.y1, handles.x1) = 0;
 handles.board_matrix = M;
