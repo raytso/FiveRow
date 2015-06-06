@@ -22,7 +22,7 @@ function varargout = FiveRow(varargin)
 
 % Edit the above text to modify the response to help FiveRow
 
-% Last Modified by GUIDE v2.5 05-Jun-2015 16:26:02
+% Last Modified by GUIDE v2.5 05-Jun-2015 21:57:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -70,15 +70,18 @@ im = imread('board.png');
 imageHandle = imshow(im, 'Parent', handles.axes2);
 axis off;
 
+% Set "Now Playing" black chess icon
 black_chess = image(im_black);
 set(black_chess,'Parent', handles.axes3, 'AlphaData', blackchess_alpha);
-axis off;
+axis off
 
+% Set "Now Playing" white chess icon
 white_chess = image(im_white);
 set(white_chess,'Parent', handles.axes4, 'AlphaData', whitechess_alpha);
-axis off;
+axis off
 
 
+% Set 21X21 board_matrix (with 0 on borders)
 handles.board_matrix = zeros(21);
 
 % Set first user
@@ -125,8 +128,8 @@ if win_check == 0
     handles.y(playround) = round((coordinates(2)-17)/51.5) + 2;
     
     % x2, y2 is for image pinpoints
-    x2 = (handles.x(playround)-2)*51.5*0.8861 + 15;
-    y2 = 835 - (handles.y(playround)-2)*51.5*0.8861;
+    x2 = (handles.x(playround)-2)*51.5*0.8888 + 15;
+    y2 = 835 - (handles.y(playround)-2)*51.5*0.89;
     
     % Get board_matrix data and load into local variable
     M = handles.board_matrix;
@@ -137,7 +140,6 @@ if win_check == 0
     else
         if handles.user == 1
             black_axes = axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
-%             handles.black_chess(playround) = black_axes;
             [black, map, blackchess_alpha] = imread('chess_black.png');
             handles.black_chess(playround) = image(black);
             set(handles.black_chess(playround), 'AlphaData', blackchess_alpha);
@@ -145,7 +147,6 @@ if win_check == 0
 
         else
             white_axes = axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
-%             handles.white_chess = white_axes;
             [white, map, whitechess_alpha] = imread('chess_white.png');
             handles.white_chess(playround) = image(white);
             set(handles.white_chess(playround), 'AlphaData', whitechess_alpha);
@@ -160,6 +161,7 @@ if win_check == 0
             winner  = handles.user;
             win_dialog();
             set(handles.oops_button,'Enable','off');
+            set(handles.forfeit_button,'Enable','off');
         else
             %continue
         end
@@ -453,4 +455,54 @@ function axes3_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: place code in OpeningFcn to populate axes3
+axis off
 
+
+% --- Executes during object creation, after setting all properties.
+function axes4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes4
+
+axis off
+
+% --- Executes during object creation, after setting all properties.
+function axes5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes5
+axis off
+
+% --- Executes during object creation, after setting all properties.
+function axes6_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes6
+axis off
+
+
+
+% --- Executes during object creation, after setting all properties.
+function axes7_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes7
+axis off
+
+
+% --- Executes during object creation, after setting all properties.
+function axes8_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes8
+axis off
