@@ -22,7 +22,7 @@ function varargout = exit_dialog(varargin)
 
 % Edit the above text to modify the response to help exit_dialog
 
-% Last Modified by GUIDE v2.5 19-May-2015 18:42:07
+% Last Modified by GUIDE v2.5 07-Jun-2015 11:42:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -68,7 +68,7 @@ if(nargin > 3)
          case 'title'
           set(hObject, 'Name', varargin{index+1});
          case 'string'
-          set(handles.exit_text, 'String', varargin{index+1});
+          set(handles.forfeit_text, 'String', varargin{index+1});
         end
     end
 end

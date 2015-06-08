@@ -55,15 +55,6 @@ function FiveRow_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for FiveRow
 handles.output = hObject;
 
-% Set scrollbars
-% set(gcf,'visible','off')
-% jScrollPane_blackbox = findjobj(handles.black_history_edittext);
-% set(jScrollPane_blackbox, 'VerticalScrollBarPolicy',20);
-% jScrollPane_whitebox = findjobj(handles.white_history_edittext);
-% set(jScrollPane_whitebox, 'VerticalScrollBarPolicy',20);
-% set(gcf,'visible','on')
-
-
 % UIWAIT makes FiveRow wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -118,7 +109,6 @@ handles.play_round = 0;
 global winner;
 winner = 0;
 
-
 % Set callback function for image when clicked
 set(imageHandle, 'ButtonDownFcn', {@ImageClickCallback, hObject, handles});
 
@@ -161,6 +151,8 @@ if win_check == 0
     if cache ~= 0    
     else
         if handles.user == 1
+            jScrollPane = findjobj(handles.black_history_edittext);
+            set(jScrollPane, 'VerticalScrollBarPolicy',jScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED)
             set(handles.play_round_data_text, 'String', round(playround/2));
             black_axes = axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
             [black, map, blackchess_alpha] = imread('chess_black.png');
