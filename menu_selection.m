@@ -22,7 +22,7 @@ function varargout = menu_selection(varargin)
 
 % Edit the above text to modify the response to help menu_selection
 
-% Last Modified by GUIDE v2.5 04-Jun-2015 08:26:30
+% Last Modified by GUIDE v2.5 09-Jun-2015 13:51:35
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -96,3 +96,21 @@ function start_button_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to start_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes during object creation, after setting all properties.
+function figure1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+ha = axes('units','normalized', ...
+            'position',[0 0 1 1]);
+uistack(ha, 'bottom')
+i = imread('sakura_background.jpg');
+hi = imagesc(i);
+set(ha,'handlevisibility','off', ...
+            'visible','off');
+axis off;
+title = text(0,0.8,'Five Row Chess');
+get(title)
+set(title,'FontSize',78.0,'color',[0, 1, 1]);

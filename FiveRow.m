@@ -22,7 +22,7 @@ function varargout = FiveRow(varargin)
 
 % Edit the above text to modify the response to help FiveRow
 
-% Last Modified by GUIDE v2.5 07-Jun-2015 18:02:01
+% Last Modified by GUIDE v2.5 09-Jun-2015 14:11:56
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -619,8 +619,9 @@ function black_history_edittext_CreateFcn(hObject, eventdata, handles)
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
+set(hObject,'BackgroundColor','none');
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+    set(hObject,'BackgroundColor','none');
 end
 
 
@@ -644,3 +645,18 @@ function white_history_edittext_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes during object creation, after setting all properties.
+function figure1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+
+% --- Executes during object creation, after setting all properties.
+function text_nowplaying_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to text_nowplaying (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
