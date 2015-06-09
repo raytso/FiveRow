@@ -114,6 +114,11 @@ handles.win = 0;
 % Set round
 handles.play_round = 0;
 
+% Set number of clicks
+handles.clicks = 0;
+
+% handles.initstring = '';
+
 % Set winner
 global winner;
 winner = 0;
@@ -134,11 +139,15 @@ set(handles.oops_button,'Enable','on');
 % Copy handles.* variables
 win_check = handles.win;
 playround = handles.play_round;
+handles.black_initstring = '';
+handles.white_initstring = '';
 
 if win_check == 0 
     % Increment this round and save back to handles.
     playround = playround + 1;
+%     click = click + 1;
     handles.play_round = playround;
+%     handles.clicks = click;
     
     % Get the users mouse coordinates when clicked
     axesHandle  = get(imageHandle,'Parent');
@@ -156,6 +165,10 @@ if win_check == 0
     % Get board_matrix data and load into local variable
     M = handles.board_matrix;
     cache = M(handles.y(playround), handles.x(playround));
+    pointx = num2str(handles.x(playround));
+    pointy = num2str(handles.y(playround));
+    point = strcat('<',pointx,',',pointy,'>');
+    handles.cell{playround} = point;
     
     % input data to matrix
     if cache ~= 0    
@@ -167,6 +180,11 @@ if win_check == 0
             handles.black_chess(round(playround/2)) = image(black);
             set(handles.black_chess(round(playround/2)), 'AlphaData', blackchess_alpha);
             axis off;
+            for i = 1:2:playround
+                handles.black_initstring = [handles.black_initstring handles.cell(i)];
+            end
+            set(handles.black_history_edittext, 'String', handles.black_initstring);
+            set(handles.black_history_edittext, 'Value', round(playround/2));
 
         else
             white_axes = axes('Units','pixels','Position',[ x2, y2, 25, 25 ]);
@@ -174,6 +192,11 @@ if win_check == 0
             handles.white_chess(round(playround/2)) = image(white);
             set(handles.white_chess(round(playround/2)), 'AlphaData', whitechess_alpha);
             axis off;
+            for i = 2:2:playround
+                handles.white_initstring = [handles.white_initstring handles.cell(i)];
+            end
+            set(handles.white_history_edittext, 'String', handles.white_initstring);
+            set(handles.white_history_edittext, 'Value', round(playround/2));
         end
 
         M(handles.y(playround), handles.x(playround)) = handles.user;
@@ -211,6 +234,8 @@ if win_check == 0
     end
 else
 end
+handles.black_initstring = '';
+handles.white_initstring = '';
 guidata(hObject, handles);
 
 
@@ -401,20 +426,50 @@ function oops_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 M = handles.board_matrix;
+% click = handles.clicks;
 playround = handles.play_round;
+% click = click + 1;
+% handles.clicks = click;
 M(handles.y(playround), handles.x(playround)) = 0;
 handles.board_matrix = M;
 delete(axes);
+handles.cell{playround} = '';
 if handles.user == 1
     delete(handles.white_chess(round(playround/2)));
     handles.user = -1;
+    for i = 2:2:playround
+    handles.white_initstring = [handles.white_initstring handles.cell(i)];
+    end
+    set(handles.white_history_edittext, 'String', handles.white_initstring);
+    set(handles.white_history_edittext, 'Value', (round((playround-1)/2))-1);
+    set(get(handles.axes5,'children'),'visible','off') %hide the current axes contents
+    axis off;
+%             set(handles.axes6,'visible','on') %hide the current axes
+    set(get(handles.axes6,'children'),'visible','on') %hide the current axes contents
+    axis off;
+    
 else
     delete(handles.black_chess(round(playround/2)));
     handles.user = 1;
+    for i = 1:2:playround
+    handles.black_initstring = [handles.black_initstring handles.cell(i)];
+    end
+    set(handles.black_history_edittext, 'Value', round((playround-1)/2));
+    set(handles.black_history_edittext, 'String', handles.black_initstring);
+    set(get(handles.axes6,'children'),'visible','off') %hide the current axes contents
+    axis off;
+%             set(handles.axes5,'visible','on') %hide the current axes
+    set(get(handles.axes5,'children'),'visible','on') %hide the current axes contents
+    axis off;
+    
 end
+
 playround = playround - 1;
 handles.play_round = playround;
 set(handles.play_round_data_text, 'String', round(playround/2));
+
+handles.black_initstring = '';
+handles.white_initstring = '';
 
 guidata(hObject, handles);
 
@@ -567,7 +622,6 @@ function black_history_edittext_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 function white_history_edittext_Callback(hObject, eventdata, handles)
